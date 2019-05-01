@@ -1,40 +1,39 @@
 package br.com.apsoo.pedidos.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "TB_CATEGORIA")
-@SequenceGenerator(name = "seq_categoria")
-public class Categoria implements Serializable {
+@Table(name = "TB_CIDADE")
+@SequenceGenerator(name = "seq_cidade")
+public class Cidade implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
-
     @Id
-    @Column(name = "CA_ID")
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "seq_categoria")
+    @Column(name = "CI_ID")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "seq_cidade")
     private Integer id;
 
-    @Column(name = "CA_NOME")
+    @Column(name = "CI_NOME")
     private String nome;
 
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "ES_ID") // chave estrangeira de estado
+    private Estado estado;
 
-
-    @ManyToMany(mappedBy = "categorias")
-    private List<Produto> produtos = new ArrayList<>();
-
-    public Categoria(){
+    public Cidade() {
 
     }
 
-    public Categoria(Integer id, String nome) {
+    public Cidade(Integer id, String nome, Estado estado) {
         this.id = id;
         this.nome = nome;
+        this.estado = estado;
     }
 
     public Integer getId() {
@@ -53,20 +52,20 @@ public class Categoria implements Serializable {
         this.nome = nome;
     }
 
-    public List<Produto> getProdutos() {
-        return produtos;
+    public Estado getEstado() {
+        return estado;
     }
 
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = produtos;
+    public void setEstado(Estado estado) {
+        this.estado = estado;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Categoria categoria = (Categoria) o;
-        return Objects.equals(id, categoria.id);
+        Cidade cidade = (Cidade) o;
+        return id.equals(cidade.id);
     }
 
     @Override
